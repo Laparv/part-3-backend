@@ -1,7 +1,13 @@
+const { json } = require('express')
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
+
+morgan.token('person', (req) => JSON.stringify(req.body));
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :person'))
+
 
 let persons = [
     {
@@ -56,16 +62,21 @@ const generateId = () => {
     return randomId;
 }
 
+const checkName = (name1, name2) => {
+
+}
+
 app.post('/api/persons',(request, response) => {
     const body = request.body
+    const checkName = persons.map(person => person.name)
+
 
     if(!body.name || !body.number) {
         return response.status(400).json({error: 'Name/number missing'})
+    } 
+    else if(checkName.includes(body.name)) {
+        return response.status(400).json({error: 'name must be unique'})
     }
-    else if(persons.map(person => person.name === body.name)) {
-        return response.status(409).json({error: 'name must be unique'})
-    }
-    else{
 
     const person = {
         id: generateId(),
@@ -74,10 +85,10 @@ app.post('/api/persons',(request, response) => {
     }
 
     persons = persons.concat(person)
-    console.log(person)
-    response.json(persons)}
-
+    response.json(persons)
 })
+
+
 
 const PORT = 3001;
 app.listen(PORT, () => {
