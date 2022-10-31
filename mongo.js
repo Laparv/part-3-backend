@@ -10,9 +10,9 @@ const password = process.argv[2]
 const url =
   `mongodb+srv://Laparv:${password}@cluster0.9c7yrtv.mongodb.net/phonebookApp?retryWrites=true&w=majority`
 
-  const generateId = () => {
-    const randomId = Math.floor(Math.random() *1000)
-    return randomId;
+const generateId = () => {
+  const randomId = Math.floor(Math.random() *1000)
+  return randomId
 }
 
 
@@ -44,7 +44,7 @@ else{
   mongoose.connect(url)
 
   Person.find({}).then(result => {
-    console.log("phonebook:")
+    console.log('phonebook:')
     result.forEach(contact => {
       console.log(`${contact.name} ${contact.number}`)
     })
